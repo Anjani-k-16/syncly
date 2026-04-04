@@ -104,19 +104,7 @@ export default function AuthPage() {
     }
     setLoading(false);
   };
-  const handleGuestLogin = async () => {
-    setError('');
-    setLoading(true);
-
-    try {
-      await login('demo@syncly.com', 'demo123');
-      navigate('/');
-      } catch (err) {
-        setError('Guest demo login failed');
-      }
-
-      setLoading(false);
-  };
+  
   const handleGuestLogin = async () => {
     setError('');
     setLoading(true);
