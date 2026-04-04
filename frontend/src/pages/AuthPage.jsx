@@ -104,6 +104,32 @@ export default function AuthPage() {
     }
     setLoading(false);
   };
+  const handleGuestLogin = async () => {
+    setError('');
+    setLoading(true);
+
+    try {
+      await login('demo@syncly.com', 'demo123');
+      navigate('/');
+      } catch (err) {
+        setError('Guest demo login failed');
+      }
+
+      setLoading(false);
+  };
+  const handleGuestLogin = async () => {
+    setError('');
+    setLoading(true);
+
+    try {
+      await login('demo@syncly.com', 'demo123');
+      navigate('/');
+    } catch (err) {
+      setError('Guest demo login failed');
+    }
+
+    setLoading(false);
+  };
 
   const switchMode = (m) => {
     setMode(m); setStep(1); setError(''); setSuccess('');
@@ -198,6 +224,14 @@ export default function AuthPage() {
               <button type="submit" disabled={loading}
                 className="w-full bg-accent hover:bg-accentDim text-void font-display font-600 py-3 rounded-xl transition-all disabled:opacity-50">
                 {loading ? 'Signing in…' : 'Sign In'}
+              </button>
+              <button
+                type="button"
+                onClick={handleGuestLogin}
+                disabled={loading}
+                className="w-full bg-surface border border-border text-text py-3 rounded-xl hover:border-accent transition-all disabled:opacity-50"
+              >
+                Explore Live Demo
               </button>
               <button type="button" onClick={() => switchMode('forgot')}
                 className="w-full text-center text-dim hover:text-accent text-xs font-body transition-colors">
