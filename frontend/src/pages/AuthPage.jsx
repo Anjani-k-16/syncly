@@ -11,6 +11,7 @@ export default function AuthPage() {
   const [error, setError]     = useState('');
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
+  const [guestLoading, setGuestLoading] = useState(false);
   const [resendTimer, setResendTimer] = useState(0);
   const otpRefs = useRef([]);
   const { login, register } = useAuthStore();
@@ -22,6 +23,17 @@ export default function AuthPage() {
       return () => clearTimeout(t);
     }
   }, [resendTimer]);
+
+  const handleGuestLogin = async () => {
+    setGuestLoading(true); setError('');
+    try {
+      await login('guest@syncly.demo', 'guest123456');
+      navigate('/');
+    } catch {
+      setError('Guest account unavailable. Please sign up.');
+    }
+    setGuestLoading(false);
+  };
 
   const handleOtpChange = (index, value) => {
     if (!/^\d*$/.test(value)) return;
@@ -52,7 +64,7 @@ export default function AuthPage() {
       await api.post('/api/auth/send-otp', { email: form.email });
       setStep(2);
       setResendTimer(60);
-      setSuccess('✅ OTP sent to ' + form.email);
+      setSuccess('OTP sent to ' + form.email);
     } catch (err) {
       setError(err.response?.data?.error || 'Failed to send OTP');
     }
@@ -82,7 +94,7 @@ export default function AuthPage() {
       await api.post('/api/auth/send-otp', { email: form.email });
       setResendTimer(60);
       setOtp(['','','','','','']);
-      setSuccess('✅ New OTP sent!');
+      setSuccess('New OTP sent!');
     } catch (err) {
       setError(err.response?.data?.error || 'Failed to resend');
     }
@@ -97,7 +109,7 @@ export default function AuthPage() {
         navigate('/');
       } else if (mode === 'forgot') {
         await api.post('/api/auth/forgot-password', { email: form.email });
-        setSuccess('✅ If that email exists, a reset link was sent!');
+        setSuccess('If that email exists, a reset link was sent!');
       }
     } catch (err) {
       setError(err.response?.data?.error || 'Something went wrong');
@@ -132,9 +144,8 @@ export default function AuthPage() {
 
         <div className="bg-panel border border-border rounded-2xl p-8 glow-accent">
 
-          {/* Tabs */}
           {mode !== 'forgot' && (
-            <div className="flex bg-surface rounded-xl p-1 mb-8">
+            <div className="flex bg-surface rounded-xl p-1 mb-6">
               {['login','register'].map(m => (
                 <button key={m} onClick={() => switchMode(m)}
                   className={`flex-1 py-2 rounded-lg text-sm font-display font-500 transition-all capitalize
@@ -145,7 +156,31 @@ export default function AuthPage() {
             </div>
           )}
 
-          {/* FORGOT PASSWORD */}
+          {/* Guest button - only on login tab */}
+          {mode === 'login' && (
+            <>
+              <button type="button" onClick={handleGuestLogin} disabled={guestLoading}
+                className="w-full flex items-center justify-center gap-2 border border-accent/40
+                  text-accent hover:bg-accent/10 font-display font-600 py-3 rounded-xl
+                  transition-all text-sm mb-4 disabled:opacity-50">
+                {guestLoading
+                  ? <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+                    </svg>
+                  : '👀'
+                }
+                {guestLoading ? 'Logging in…' : 'Try as Guest — No signup needed'}
+              </button>
+              <div className="flex items-center gap-3 mb-4">
+                <div className="flex-1 h-px bg-border" />
+                <span className="text-xs text-dim font-body">or sign in with email</span>
+                <div className="flex-1 h-px bg-border" />
+              </div>
+            </>
+          )}
+
+          {/* FORGOT */}
           {mode === 'forgot' && (
             <>
               <div className="mb-6">
@@ -170,26 +205,9 @@ export default function AuthPage() {
               </form>
               <button onClick={() => switchMode('login')}
                 className="w-full text-center text-dim hover:text-accent text-xs font-body mt-4 transition-colors">
-                ← Back to Sign In
+                Back to Sign In
               </button>
             </>
-          )}
-          {mode === 'login' && (
-            <button type="button"
-              onClick={async () => {
-                setError(''); setLoading(true);
-                try {
-                  await login('guest@syncly.demo', 'guest123456');
-                  navigate('/');
-                } catch {
-                  setError('Guest login unavailable. Please sign up.');
-                }
-                setLoading(false);
-              }}
-              className="w-full border border-accent/30 text-accent hover:bg-accent/10
-               font-display font-600 py-3 rounded-xl transition-all text-sm">
-              Try as Guest
-            </button>
           )}
 
           {/* LOGIN */}
@@ -253,15 +271,15 @@ export default function AuthPage() {
               {error && <div className="bg-pulse/10 border border-pulse/30 rounded-xl px-4 py-3 text-pulse text-sm">{error}</div>}
               <button type="submit" disabled={loading}
                 className="w-full bg-accent hover:bg-accentDim text-void font-display font-600 py-3 rounded-xl transition-all disabled:opacity-50">
-                {loading ? 'Sending OTP…' : 'Send Verification Code →'}
+                {loading ? 'Sending OTP…' : 'Send Verification Code'}
               </button>
               <p className="text-center text-muted text-xs font-body">
-                We'll send a 6-digit code to verify your email
+                We will send a 6-digit code to verify your email
               </p>
             </form>
           )}
 
-          {/* REGISTER STEP 2 — OTP */}
+          {/* REGISTER STEP 2 */}
           {mode === 'register' && step === 2 && (
             <div className="animate-fade-in">
               <div className="text-center mb-6">
@@ -275,14 +293,10 @@ export default function AuthPage() {
                   <strong className="text-accent">{form.email}</strong>
                 </p>
               </div>
-
-              {/* OTP boxes */}
               <div className="flex gap-3 justify-center mb-6" onPaste={handleOtpPaste}>
                 {otp.map((digit, i) => (
-                  <input key={i}
-                    ref={el => otpRefs.current[i] = el}
-                    type="text" inputMode="numeric"
-                    maxLength={1} value={digit}
+                  <input key={i} ref={el => otpRefs.current[i] = el}
+                    type="text" inputMode="numeric" maxLength={1} value={digit}
                     onChange={e => handleOtpChange(i, e.target.value)}
                     onKeyDown={e => handleOtpKeyDown(i, e)}
                     className={`w-12 h-14 text-center text-2xl font-mono font-700 rounded-xl border-2
@@ -292,7 +306,6 @@ export default function AuthPage() {
                   />
                 ))}
               </div>
-
               {error && (
                 <div className="bg-pulse/10 border border-pulse/30 rounded-xl px-4 py-3
                   text-pulse text-sm mb-4 text-center">{error}</div>
@@ -301,23 +314,19 @@ export default function AuthPage() {
                 <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-xl px-4 py-3
                   text-emerald-400 text-sm mb-4 text-center">{success}</div>
               )}
-
               <button onClick={handleVerifyOTP}
                 disabled={loading || otp.join('').length !== 6}
                 className="w-full bg-accent hover:bg-accentDim text-void font-display font-600
                   py-3 rounded-xl transition-all disabled:opacity-40 disabled:cursor-not-allowed mb-3">
                 {loading ? 'Verifying…' : 'Verify & Create Account'}
               </button>
-
               <div className="flex items-center justify-between text-xs font-body">
-                <button
-                  onClick={() => { setStep(1); setError(''); setSuccess(''); setOtp(['','','','','','']); }}
+                <button onClick={() => { setStep(1); setError(''); setSuccess(''); setOtp(['','','','','','']); }}
                   className="text-dim hover:text-text transition-colors">
-                  ← Change email
+                  Change email
                 </button>
                 <button onClick={handleResend} disabled={resendTimer > 0}
-                  className={`transition-colors
-                    ${resendTimer > 0 ? 'text-muted cursor-not-allowed' : 'text-accent hover:text-accentDim'}`}>
+                  className={`transition-colors ${resendTimer > 0 ? 'text-muted cursor-not-allowed' : 'text-accent hover:text-accentDim'}`}>
                   {resendTimer > 0 ? `Resend in ${resendTimer}s` : 'Resend OTP'}
                 </button>
               </div>
