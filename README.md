@@ -2,8 +2,9 @@
 
 A production-grade real-time messaging application.
 
-## Live Demo
+## Live Demo > Click "Try as Guest" to explore without signing up!
 https://syncly-frontend.onrender.com
+
 
 ## Tech Stack
 
