@@ -416,7 +416,7 @@ export default function ChatWindow() {
 
         {showMembers && !isDM && (
           <div className="w-56 border-l border-border bg-panel flex-shrink-0
-            overflow-y-auto p-3 animate-slide-in">
+            overflow-y-auto p-3 animate-slide-in absolute right-0 bottom-0 top-[57px] z-10">
             <p className="text-xs font-display font-700 text-dim uppercase tracking-widest mb-3 px-2">
               Members
             </p>
