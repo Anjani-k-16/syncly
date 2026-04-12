@@ -168,7 +168,7 @@ export default function AuthPage() {
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
                     </svg>
-                  : '👀'
+                  
                 }
                 {guestLoading ? 'Logging in…' : 'Try as Guest — No signup needed'}
               </button>
@@ -285,7 +285,10 @@ export default function AuthPage() {
               <div className="text-center mb-6">
                 <div className="w-12 h-12 rounded-2xl bg-accent/10 border border-accent/20
                   flex items-center justify-center mx-auto mb-3">
-                  <span className="text-2xl">📧</span>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-accent">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                    <polyline points="22,6 12,12 2,6"/>
+                  </svg>
                 </div>
                 <h3 className="font-display font-700 text-text text-lg mb-1">Check your email</h3>
                 <p className="text-dim text-sm font-body">
