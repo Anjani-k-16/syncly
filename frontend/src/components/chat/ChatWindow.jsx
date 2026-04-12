@@ -235,7 +235,7 @@ export default function ChatWindow() {
           </div>
         </div>
       ) : (
-        <div className="relative z-[9999] flex items-center gap-3 px-5 py-3.5 border-b border-border
+        <div className="relative z-20 flex items-center gap-3 px-5 py-3.5 border-b border-border
           bg-panel/50 backdrop-blur-sm flex-shrink-0">
           {isDM ? (
             <Avatar user={partner} size="md" showOnline />
@@ -267,7 +267,7 @@ export default function ChatWindow() {
                 <Users size={13} /> Members
               </button>
             )}
-            <div className="relative z-[9999]">
+            <div className="relative z-30">
               <button onClick={() => setShowMenu(p => !p)}
                 className="p-1.5 text-dim hover:text-text transition-colors rounded-lg hover:bg-surface">
                 <MoreVertical size={16} />
