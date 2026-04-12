@@ -10,7 +10,7 @@ https://syncly-frontend.onrender.com
 
 - **Backend:** Node.js, Fastify, Socket.IO, PostgreSQL, Redis
 - **Frontend:** React, Vite, TailwindCSS, Zustand
-- **Infrastructure:** Docker Compose, Cloudinary, Gmail SMTP
+- **Infrastructure:** Docker Compose, Cloudinary, Resend
 
 ## Features
 
@@ -21,6 +21,7 @@ https://syncly-frontend.onrender.com
 - Email OTP verification on registration
 - Message reactions, replies, starring and selection
 - Image/file uploads, GIF support, emoji and sticker packs
+- In-app camera capture for photos
 - Typing indicators and read receipts ✓✓
 - Group channels and direct messages
 - User profiles with avatar upload
